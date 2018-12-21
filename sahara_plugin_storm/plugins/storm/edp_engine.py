@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sahara import exceptions as ex
-from sahara.i18n import _
-from sahara.service.edp.storm import engine as edp_engine
+from sahara.plugins import edp
+from sahara.plugins import exceptions as ex
+from sahara_plugin_storm.i18n import _
 
 
-class EdpStormEngine(edp_engine.StormJobEngine):
+class EdpStormEngine(edp.PluginsStormJobEngine):
 
     edp_base_version = "1.0.1"
 
@@ -28,14 +28,14 @@ class EdpStormEngine(edp_engine.StormJobEngine):
 
     def validate_job_execution(self, cluster, job, data):
         if not self.edp_supported(cluster.hadoop_version):
-            raise ex.InvalidDataException(
+            raise ex.PluginInvalidDataException(
                 _('Storm {base} required to run {type} jobs').format(
                     base=EdpStormEngine.edp_base_version, type=job.type))
 
         super(EdpStormEngine, self).validate_job_execution(cluster, job, data)
 
 
-class EdpPyleusEngine(edp_engine.StormPyleusJobEngine):
+class EdpPyleusEngine(edp.PluginsStormPyleusJobEngine):
 
     edp_base_version = "1.0.1"
 
@@ -45,7 +45,7 @@ class EdpPyleusEngine(edp_engine.StormPyleusJobEngine):
 
     def validate_job_execution(self, cluster, job, data):
         if not self.edp_supported(cluster.hadoop_version):
-            raise ex.InvalidDataException(
+            raise ex.PluginInvalidDataException(
                 _('Storm {base} required to run {type} jobs').format(
                     base=EdpPyleusEngine.edp_base_version, type=job.type))
 

@@ -14,8 +14,8 @@
 
 from testtools import testcase
 
-from sahara.plugins.storm import config_helper as s_config
-from sahara.plugins.storm import plugin as s_plugin
+from sahara_plugin_storm.plugins.storm import config_helper as s_config
+from sahara_plugin_storm.plugins.storm import plugin as s_plugin
 
 
 class TestStormConfigHelper(testcase.TestCase):

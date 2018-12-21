@@ -15,12 +15,10 @@
 
 from oslo_config import cfg
 
-from sahara import conductor as c
-from sahara import exceptions as ex
-from sahara.i18n import _
+from sahara.plugins import exceptions as ex
+from sahara_plugin_storm.i18n import _
 
 
-conductor = c.API
 CONF = cfg.CONF
 
 

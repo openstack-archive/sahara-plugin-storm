@@ -15,17 +15,13 @@
 
 import mock
 
-from sahara import conductor as cond
-from sahara import context
 from sahara.plugins import base as pb
+from sahara.plugins import conductor
+from sahara.plugins import context
+from sahara.plugins import edp
 from sahara.plugins import exceptions as ex
-from sahara.plugins.storm import plugin as pl
-from sahara.service.edp.storm import engine
-from sahara.tests.unit import base
-from sahara.utils import edp
-
-
-conductor = cond.API
+from sahara_plugin_storm.plugins.storm import plugin as pl
+from sahara_plugin_storm.tests.unit import base
 
 
 class StormPluginTest(base.SaharaWithDbTestCase):
@@ -87,7 +83,7 @@ class StormPluginTest(base.SaharaWithDbTestCase):
                 plugin._validate_existing_ng_scaling(cluster,
                                                      supervisor_id))
 
-    @mock.patch("sahara.plugins.storm.plugin.utils")
+    @mock.patch("sahara_plugin_storm.plugins.storm.plugin.utils")
     def test_validate(self, mock_utils):
 
         cluster_data = self._get_cluster('cluster', '1.1.0')
@@ -271,24 +267,24 @@ class StormPluginTest(base.SaharaWithDbTestCase):
 
     def test_plugin101_edp_storm_engine(self):
         self._test_engine('1.0.1', edp.JOB_TYPE_STORM,
-                          engine.StormJobEngine)
+                          edp.PluginsStormJobEngine)
 
     def test_plugin101_edp_storm_pyleus_engine(self):
         self._test_engine('1.0.1', edp.JOB_TYPE_PYLEUS,
-                          engine.StormJobEngine)
+                          edp.PluginsStormPyleusJobEngine)
 
     def test_plugin110_edp_storm_engine(self):
         self._test_engine('1.1.0', edp.JOB_TYPE_STORM,
-                          engine.StormJobEngine)
+                          edp.PluginsStormJobEngine)
 
     def test_plugin110_edp_storm_pyleus_engine(self):
         self._test_engine('1.1.0', edp.JOB_TYPE_PYLEUS,
-                          engine.StormJobEngine)
+                          edp.PluginsStormPyleusJobEngine)
 
     def test_plugin120_edp_storm_engine(self):
         self._test_engine('1.2', edp.JOB_TYPE_STORM,
-                          engine.StormJobEngine)
+                          edp.PluginsStormJobEngine)
 
     def test_plugin120_edp_storm_pyleus_engine(self):
         self._test_engine('1.2', edp.JOB_TYPE_PYLEUS,
-                          engine.StormJobEngine)
+                          edp.PluginsStormPyleusJobEngine)

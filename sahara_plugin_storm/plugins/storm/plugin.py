@@ -19,20 +19,16 @@ from oslo_log import log as logging
 import six
 import yaml
 
-from sahara import conductor
-from sahara import context
-from sahara.i18n import _
+from sahara.plugins import conductor
+from sahara.plugins import context
 from sahara.plugins import exceptions as ex
 from sahara.plugins import provisioning as p
-from sahara.plugins.storm import config_helper as c_helper
-from sahara.plugins.storm import edp_engine
-from sahara.plugins.storm import run_scripts as run
 from sahara.plugins import utils
-from sahara.utils import cluster_progress_ops as cpo
-from sahara.utils import general as ug
-from sahara.utils import remote
+from sahara_plugin_storm.i18n import _
+from sahara_plugin_storm.plugins.storm import config_helper as c_helper
+from sahara_plugin_storm.plugins.storm import edp_engine
+from sahara_plugin_storm.plugins.storm import run_scripts as run
 
-conductor = conductor.API
 LOG = logging.getLogger(__name__)
 
 
@@ -188,10 +184,10 @@ class StormProvider(p.ProvisioningPluginBase):
 
         return extra
 
-    @cpo.event_wrapper(
+    @utils.event_wrapper(
         True, step=utils.start_process_event_message("StormMaster"))
     def _start_storm_master(self, sm_instance):
-        with remote.get_remote(sm_instance) as r:
+        with utils.get_remote(sm_instance) as r:
             run.start_storm_nimbus_and_ui(r)
             LOG.info("Storm master at {host} has been started".format(
                 host=sm_instance.hostname()))
@@ -199,16 +195,16 @@ class StormProvider(p.ProvisioningPluginBase):
     def _start_slave_processes(self, sl_instances):
         if len(sl_instances) == 0:
             return
-        cpo.add_provisioning_step(
+        utils.add_provisioning_step(
             sl_instances[0].cluster_id,
             utils.start_process_event_message("Slave"), len(sl_instances))
 
-        with context.ThreadGroup() as tg:
+        with context.PluginsThreadGroup() as tg:
             for i in sl_instances:
                 tg.spawn('storm-start-sl-%s' % i.instance_name,
                          self._start_slaves, i)
 
-    @cpo.event_wrapper(True)
+    @utils.event_wrapper(True)
     def _start_slaves(self, instance):
         with instance.remote() as r:
             run.start_storm_supervisor(r)
@@ -217,16 +213,16 @@ class StormProvider(p.ProvisioningPluginBase):
         if len(zk_instances) == 0:
             return
 
-        cpo.add_provisioning_step(
+        utils.add_provisioning_step(
             zk_instances[0].cluster_id,
             utils.start_process_event_message("Zookeeper"), len(zk_instances))
 
-        with context.ThreadGroup() as tg:
+        with context.PluginsThreadGroup() as tg:
             for i in zk_instances:
                 tg.spawn('storm-start-zk-%s' % i.instance_name,
                          self._start_zookeeper, i)
 
-    @cpo.event_wrapper(True)
+    @utils.event_wrapper(True)
     def _start_zookeeper(self, instance):
         with instance.remote() as r:
             run.start_zookeeper(r)
@@ -241,10 +237,10 @@ class StormProvider(p.ProvisioningPluginBase):
 
     def _push_configs_to_nodes(self, cluster, extra, new_instances):
         all_instances = utils.get_instances(cluster)
-        cpo.add_provisioning_step(
+        utils.add_provisioning_step(
             cluster.id, _("Push configs to nodes"), len(all_instances))
 
-        with context.ThreadGroup() as tg:
+        with context.PluginsThreadGroup() as tg:
             for instance in all_instances:
                 if instance in new_instances:
                     tg.spawn('storm-configure-%s' % instance.instance_name,
@@ -266,7 +262,7 @@ class StormProvider(p.ProvisioningPluginBase):
 
         return stream
 
-    @cpo.event_wrapper(True)
+    @utils.event_wrapper(True)
     def _push_configs_to_new_node(self, cluster, extra, instance):
         ng_extra = extra[instance.node_group.id]
 
@@ -286,7 +282,7 @@ class StormProvider(p.ProvisioningPluginBase):
             '/home/ubuntu/.pyleus.conf': ng_extra['pyleus_conf']
         }
 
-        with remote.get_remote(instance) as r:
+        with utils.get_remote(instance) as r:
             node_processes = instance.node_group.node_processes
             r.write_files_to(files_storm, run_as_root=True)
             if 'zookeeper' in node_processes:
@@ -297,7 +293,7 @@ class StormProvider(p.ProvisioningPluginBase):
             if 'supervisor' in node_processes:
                 self._push_supervisor_configs(r, files_supervisor)
 
-    @cpo.event_wrapper(True)
+    @utils.event_wrapper(True)
     def _push_configs_to_existing_node(self, cluster, extra, instance):
         node_processes = instance.node_group.node_processes
         need_storm_update = ('nimbus' in node_processes or
@@ -305,7 +301,7 @@ class StormProvider(p.ProvisioningPluginBase):
         need_zookeeper_update = 'zookeeper' in node_processes
 
         ng_extra = extra[instance.node_group.id]
-        r = remote.get_remote(instance)
+        r = utils.get_remote(instance)
 
         if need_storm_update:
             storm_path = '/usr/local/storm/conf/storm.yaml'
@@ -350,14 +346,14 @@ class StormProvider(p.ProvisioningPluginBase):
                 "host": master.hostname()
             })
 
-        with remote.get_remote(master) as r:
+        with utils.get_remote(master) as r:
             ret, stdout = r.execute_command(cmd)
         names = stdout.split('\n')
         topology_names = names[0:len(names)-1]
         return topology_names
 
-    @cpo.event_wrapper(True, step=_("Rebalance Topology"),
-                       param=('cluster', 1))
+    @utils.event_wrapper(True, step=_("Rebalance Topology"),
+                         param=('cluster', 1))
     def rebalance_topology(self, cluster):
         topology_names = self._get_running_topologies_names(cluster)
         master = utils.get_instance(cluster, "nimbus")
@@ -371,7 +367,7 @@ class StormProvider(p.ProvisioningPluginBase):
                     "topology_name": topology_name
                 })
 
-            with remote.get_remote(master) as r:
+            with utils.get_remote(master) as r:
                 ret, stdout = r.execute_command(cmd)
 
     def validate_scaling(self, cluster, existing, additional):
@@ -392,7 +388,7 @@ class StormProvider(p.ProvisioningPluginBase):
         scalable_processes = self._get_scalable_processes()
 
         for ng_id in additional:
-            ng = ug.get_by_id(cluster.node_groups, ng_id)
+            ng = utils.get_by_id(cluster.node_groups, ng_id)
             if not set(ng.node_processes).issubset(scalable_processes):
                 raise ex.NodeGroupCannotBeScaled(
                     ng.name, _("Storm plugin cannot scale nodegroup"

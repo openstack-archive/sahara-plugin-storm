@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sahara.utils import patches
+from sahara_plugin_storm.utils import patches
 patches.patch_all()
 
 import oslo_i18n

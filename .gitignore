@@ -8,6 +8,7 @@
 .stestr
 .venv
 .idea
+.un~
 AUTHORS
 ChangeLog
 build
