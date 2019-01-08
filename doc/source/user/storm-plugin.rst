@@ -36,13 +36,14 @@ For cluster provisioning, prepared images should be used.
      - both versions are supported by the same image tag
 
 For more information about building image, refer to
-:doc:`building-guest-images`.
+:sahara-doc:`Sahara documentation <user/building-guest-images.html>`.
 
 The Storm plugin requires an image to be tagged in the sahara image registry
 with two tags: 'storm' and '<Storm version>' (e.g. '1.1.0').
 
 The image requires a username. For more information, refer to the
-:doc:`registering-image` section.
+:sahara-doc:`registering image <user/registering-image.html>` section
+of the Sahara documentation.
 
 Note that the Storm cluster is deployed using the scripts available in the
 Storm distribution, which allow the user to start all services (nimbus,
