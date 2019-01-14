@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# sahara-storm-plugin documentation build configuration file.
+# sahara-plugin-storm documentation build configuration file.
 #
 # -- General configuration -----------------------------------------------------
 
@@ -180,7 +180,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'sahara-storm-plugin.tex', u'sahara-storm-plugin Documentation',
+  ('index', 'sahara-plugin-storm.tex', u'sahara-plugin-storm Documentation',
    u'Sahara team', 'manual'),
 ]
 
@@ -210,7 +210,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'sahara-storm-plugin', u'sahara-storm-plugin Documentation',
+    ('index', 'sahara-plugin-storm', u'sahara-plugin-storm Documentation',
      [u'Sahara team'], 1)
 ]
 
@@ -224,8 +224,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'sahara-storm-plugin', u'sahara-storm-plugin Documentation',
-   u'Sahara team', 'sahara-storm-plugin', 'One line description of project.',
+  ('index', 'sahara-plugin-storm', u'sahara-plugin-storm Documentation',
+   u'Sahara team', 'sahara-plugin-storm', 'One line description of project.',
    'Miscellaneous'),
 ]
 
