@@ -1,0 +1,41 @@
+# Surit Aryal <aryalsurit@gmail.com>, 2019. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: sahara-plugin-storm VERSION\n"
+"Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
+"POT-Creation-Date: 2019-07-23 14:26+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2019-08-02 04:50+0000\n"
+"Last-Translator: Surit Aryal <aryalsurit@gmail.com>\n"
+"Language-Team: Nepali\n"
+"Language: ne\n"
+"X-Generator: Zanata 4.3.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "1 or more"
+msgstr "१ वा अधिक"
+
+msgid "Push configs to nodes"
+msgstr "कन्फिगरेसन नोडहरूमा पुश गर्नुहोस्"
+
+msgid "Rebalance Topology"
+msgstr "सन्तुलन टोपोलजी"
+
+#, python-format
+msgid "Storm plugin cannot scale nodegroup with processes: %s"
+msgstr "Storm प्लगइनले प्रक्रियाहरूसँग नोड ग्रुप मापन गर्न सक्दैन: %s"
+
+msgid "Storm {base} required to run {type} jobs"
+msgstr "Storm {base} required to run {type} jobs"
+
+msgid ""
+"This plugin provides an ability to launch Storm cluster without any "
+"management consoles."
+msgstr ""
+"यस प्लगइनले कुनै व्यवस्थापन कन्सोल बिना Storm क्लस्टर सुरुवात गर्न क्षमता प्रदान गर्दछ।"
+
+#, python-format
+msgid "Unable to get parameter '%(param_name)s' from service %(service)s"
+msgstr "सेवा %(service)s बाट प्यारामिटर  '%(param_name)s' प्राप्त गर्न असमर्थ"
