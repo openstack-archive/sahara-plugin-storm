@@ -1,8 +1,5 @@
 Storm plugin for Sahara
-========================
-
-User Guide
-----------
+=======================
 
 .. toctree::
    :maxdepth: 2
